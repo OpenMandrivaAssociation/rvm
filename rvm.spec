@@ -14,7 +14,6 @@ Release: %release
 Source: %name-%{version}.tar.bz2
 Url: http://www.coda.cs.cmu.edu/doc/html/index.html
 License: LGPL
-Buildroot: %_tmppath/%name-buildroot
 BuildRequires:	liblwp-devel
 Group: Development/Other
 
