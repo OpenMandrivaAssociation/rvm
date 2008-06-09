@@ -71,9 +71,13 @@ chmod 755 $RPM_BUILD_ROOT%{_libdir}/librdslwp.so.*
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if %mdkversion < 200900
 %post -p /sbin/ldconfig -n %libname
+%endif
 
+%if %mdkversion < 200900
 %postun -p /sbin/ldconfig -n %libname
+%endif
 
 %files -n %libname
 %defattr(-,root,root)
