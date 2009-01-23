@@ -1,6 +1,6 @@
 %define name rvm
-%define version 1.12
-%define release %mkrel 4
+%define version 1.15
+%define release %mkrel 1
 
 %define major 1
 
