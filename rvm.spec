@@ -1,22 +1,23 @@
 %define name rvm
-%define version 1.15
+%define version 1.16
 %define release %mkrel 1
 
 %define major 1
 
 %define libname %mklibname %name %major
-%define libnamedev %mklibname %name %major -d
+%define develname %mklibname %name -d
 
 Summary: RVM library
 Name: %name
 Version: %version
 Release: %release
-Source: %name-%{version}.tar.bz2
-Url: http://www.coda.cs.cmu.edu/doc/html/index.html
-License: LGPL
-Buildroot: %_tmppath/%name-buildroot
-BuildRequires:	liblwp-devel
 Group: Development/Other
+License: LGPL
+Url: http://www.coda.cs.cmu.edu/doc/html/index.html
+Source: ftp://ftp.wu-wien.ac.at/pub/systems/coda/src/%name-%{version}.tar.gz
+BuildRequires:	liblwp-devel
+BuildRequires:	chrpath
+Buildroot: %_tmppath/%name-%{version}
 
 %description
 The RVM persistent recoverable memory library. The RVM library is used by
@@ -25,19 +26,19 @@ the Coda distributed filesystem.
 %package -n %libname
 Summary: RVM tools
 Group: Development/Other
-Provides: %libname = %version-%release
 
 %description -n %libname
 The RVM persistent recoverable memory library. The RVM library is used by
 the Coda distributed filesystem.
 
-%package -n %libnamedev
+%package -n %develname
 Summary: RVM library development files
 Group: Development/Other
-Requires: %libname = %version
-Provides: librvm-devel = %version-%release
+Requires: %libname = %version-%release
+Provides: rvm-devel = %version-%release
+Obsoletes:  %mklibname %name -d 1
 
-%description -n %libnamedev
+%description -n %develname
 Headers and static libraries for developing programs using the RVM library.
 The RVM library is used by the Coda distributed filesystem.
 
@@ -50,26 +51,20 @@ Userspace tools to initialize and manipulate RVM log and data segments.
 The RVM library is used by the Coda distributed filesystem.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-
+autoreconf -fi
 %configure
-
 %make
 
 %install
+rm -rf %{buildroot}
 %makeinstall
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/librvm.so.*
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/librvmlwp.so.*
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/libseg.so.*
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/librds.so.*
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/librdslwp.so.*
+chrpath --delete %{buildroot}%{_libdir}/*.so.*
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %if %mdkversion < 200900
 %post -p /sbin/ldconfig -n %libname
@@ -82,34 +77,23 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %libname
 %defattr(-,root,root)
 %doc COPYING NEWS INSTALL
-%{_libdir}/librvm.so.*
 %{_libdir}/librvmlwp.so.*
-%{_libdir}/libseg.so.*
-%{_libdir}/librds.so.*
 %{_libdir}/librdslwp.so.*
+%{_libdir}/libseglwp.so.*
 
-%files -n %libnamedev
+%files -n %develname
 %defattr(-,root,root)
-%{_libdir}/librvm.la
-%{_libdir}/librvm.a
-%{_libdir}/librvm.so
 %{_libdir}/librvmlwp.la
 %{_libdir}/librvmlwp.a
 %{_libdir}/librvmlwp.so
-%{_libdir}/libseg.la
-%{_libdir}/libseg.a
-%{_libdir}/libseg.so
-%{_libdir}/librds.la
-%{_libdir}/librds.a
-%{_libdir}/librds.so
 %{_libdir}/librdslwp.la
 %{_libdir}/librdslwp.a
 %{_libdir}/librdslwp.so
-%dir %{_includedir}/rvm
-%{_includedir}/rvm/rvm.h
-%{_includedir}/rvm/rvm_statistics.h
-%{_includedir}/rvm/rvm_segment.h
-%{_includedir}/rvm/rds.h
+%{_libdir}/libseglwp.la
+%{_libdir}/libseglwp.a
+%{_libdir}/libseglwp.so
+%{_includedir}/rvm
+%{_libdir}/pkgconfig/rvmlwp.pc
 
 %files tools
 %defattr(-,root,root)
