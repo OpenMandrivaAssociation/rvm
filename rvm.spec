@@ -13,7 +13,7 @@ Version: %version
 Release: %release
 Group: Development/Other
 License: LGPL
-Url: http://www.coda.cs.cmu.edu/doc/html/index.html
+Url: https://www.coda.cs.cmu.edu/doc/html/index.html
 Source: ftp://ftp.wu-wien.ac.at/pub/systems/coda/src/%name-%{version}.tar.gz
 BuildRequires:	liblwp-devel
 BuildRequires:	chrpath
